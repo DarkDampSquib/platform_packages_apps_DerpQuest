@@ -57,6 +57,7 @@ public class LockScreenSettings extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener, Indexable {
 
     private static final String FINGERPRINT_VIB = "fingerprint_success_vib";
+    private static final String FOD_ANIMATION = "fod_anim";
     private static final String FOD_ICON_PICKER_CATEGORY = "fod_icon_picker";
     private static final String KEY_PULSE_BRIGHTNESS = "ambient_pulse_brightness";
     private static final String KEY_DOZE_BRIGHTNESS = "ambient_doze_brightness";
@@ -79,6 +80,7 @@ public class LockScreenSettings extends SettingsPreferenceFragment implements
     private SecureSettingMasterSwitchPreference mVisualizerEnabled;
 
     private FingerprintManager mFingerprintManager;
+    private Preference mFODAnimation;
     private PreferenceCategory mFODIconPickerCategory;
     private SwitchPreference mFingerprintVib;
 
@@ -90,6 +92,7 @@ public class LockScreenSettings extends SettingsPreferenceFragment implements
         final PreferenceScreen prefScreen = getPreferenceScreen();
         ContentResolver resolver = getActivity().getContentResolver();
         Resources resources = getResources();
+        Context mContext = getContext();
 
         mBatteryInfo = (SystemSettingMasterSwitchPreference)
                 findPreference(LOCKSCREEN_BATTERY_INFO);
@@ -164,6 +167,14 @@ public class LockScreenSettings extends SettingsPreferenceFragment implements
         if (mFODIconPickerCategory != null
                 && !getResources().getBoolean(com.android.internal.R.bool.config_needCustomFODView))
             prefScreen.removePreference(mFODIconPickerCategory);
+
+        boolean showFODAnimationPicker = mContext.getResources().getBoolean(R.bool.showFODAnimationPicker);
+        mFODAnimation = (Preference) findPreference(FOD_ANIMATION);
+        if ((mFODIconPickerCategory != null && mFODAnimation != null &&
+             !getResources().getBoolean(com.android.internal.R.bool.config_needCustomFODView)) ||
+                (mFODIconPickerCategory != null && mFODAnimation != null && !showFODAnimationPicker)) {
+            mFODIconPickerCategory.removePreference(mFODAnimation);
+        }
     }
 
     @Override
